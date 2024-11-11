@@ -1,9 +1,7 @@
 "use client";
 
-import InstagramFeed from "react-instagram-feed";
-
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import { motion, AnimatePresence, useInView } from "framer-motion";
 import {
   ChevronLeft,
   ChevronRight,
@@ -15,6 +13,23 @@ import {
   Recycle,
   Clock,
   Leaf,
+  ShoppingCart,
+  Box,
+  Bell,
+  Package,
+  Sun,
+  Moon,
+  Home,
+  Info,
+  Briefcase,
+  Users,
+  CreditCard,
+  MapPin as LocationIcon,
+  MessageCircle,
+  Hammer,
+  Heart,
+  Scissors,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,15 +46,112 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import InstagramFeed from "react-instagram-feed";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import Link from "next/link";
+
+interface Section {
+  id: string;
+  title: string;
+  icon: React.ReactNode;
+}
+
+interface AnimatedSectionProps {
+  children: React.ReactNode;
+  className?: string;
+  id?: string;
+}
+
+const AnimatedSection: React.FC<AnimatedSectionProps> = ({
+  children,
+  className,
+  id = "",
+}) => {
+  const ref = useRef<HTMLElement>(null);
+  const isInView = useInView(ref, { once: true, margin: "-100px 0px" });
+
+  return (
+    <motion.section
+      id={id}
+      ref={ref}
+      initial={{ opacity: 0, y: 50 }}
+      animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
+      transition={{ duration: 0.5 }}
+      className={className}
+    >
+      {children}
+    </motion.section>
+  );
+};
+
+interface TableOfContentsProps {
+  sections: Section[];
+}
+
+const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
+  const [activeSection, setActiveSection] = useState<string>(sections[0].id);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const sectionInView = sections.find((section) => {
+        const element = document.getElementById(section.id);
+        if (element) {
+          const rect = element.getBoundingClientRect();
+          return rect.top <= 10 && rect.bottom >= 10;
+        }
+        return false;
+      });
+      if (sectionInView) {
+        setActiveSection(sectionInView.id);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [sections]);
+
+  return (
+    <nav className="fixed right-4 top-1/2 transform -translate-y-1/2 z-50">
+      <ul className="space-y-2">
+        {sections.map((section) => (
+          <li key={section.id}>
+            <a
+              href={`#${section.id}`}
+              onClick={() => setActiveSection(section.id)}
+              className={`flex items-center justify-center w-10 h-10 rounded-full shadow-lg transition-colors ${
+                activeSection === section.id
+                  ? "bg-orange-600 text-white"
+                  : "bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+              }`}
+              title={section.title}
+            >
+              {section.icon}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+};
 
 export default function V12Resole() {
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  useEffect(() => {
+    const darkModePreference = localStorage.getItem("darkMode");
+    if (darkModePreference === "true") {
+      setIsDarkMode(true);
+      document.documentElement.classList.add("dark");
+    }
+  }, []);
 
   const slides = [
-    "/placeholder.svg?height=400&width=600",
-    "/placeholder.svg?height=400&width=600",
-    "/placeholder.svg?height=400&width=600",
+    "/tc_pro.jpg",
+    "/evolv_elektra.jpq",
+    "/lasportiva_solutions.jpg",
   ];
 
   const locations = [
@@ -69,7 +181,7 @@ export default function V12Resole() {
         Unparallel RH
         Rand = 2.2 mm
         Sole = 3.5 mm
-        Durometer = 75 - 80 Shore A
+        Durometer = 75 - 80 Shore Az
 
         Vibram Grip
         Rand = 1.8 mm
@@ -97,31 +209,71 @@ export default function V12Resole() {
     },
   ];
 
-  const instagramPosts = [
-    {
-      id: 1,
-      image: "/placeholder.svg?height=300&width=300",
-      likes: 120,
-      comments: 15,
-    },
-    {
-      id: 2,
-      image: "/placeholder.svg?height=300&width=300",
-      likes: 95,
-      comments: 8,
-    },
-    {
-      id: 3,
-      image: "/placeholder.svg?height=300&width=300",
-      likes: 200,
-      comments: 32,
-    },
-    {
-      id: 4,
-      image: "/placeholder.svg?height=300&width=300",
-      likes: 150,
-      comments: 20,
-    },
+  const howItWorksSteps = {
+    inPerson: [
+      {
+        title: "Place Order",
+        description:
+          "For Foster City, order online. For Santa Clara, order online or scan QR code on-site. For gyms, scan QR code on-site. See Locations page for hours and details.",
+        icon: ShoppingCart,
+      },
+      {
+        title: "Drop Off",
+        description:
+          "Visit the local drop-off location to get your shoes in the queue.",
+        icon: Box,
+      },
+      {
+        title: "Receive Notification",
+        description:
+          "Once your resole is complete, you will receive a notification via text or email.",
+        icon: Bell,
+      },
+      {
+        title: "Pick Up",
+        description:
+          "Return to the drop off location to grab your shoes. Climb on!",
+        icon: Package,
+      },
+    ],
+    shipped: [
+      {
+        title: "Place Order",
+        description:
+          "Visit our website and select the 'Ship-In Resole' option. Choose your repair type and provide shipping details.",
+        icon: ShoppingCart,
+      },
+      {
+        title: "Ship Your Shoes",
+        description:
+          "Pack your shoes securely and ship them to our facility using the provided shipping label.",
+        icon: Truck,
+      },
+      {
+        title: "Resole Process",
+        description:
+          "Our expert craftsmen will carefully resole your shoes according to your specifications.",
+        icon: Scissors,
+      },
+      {
+        title: "Return Shipping",
+        description:
+          "Once complete, we'll ship your newly resoled shoes back to you. Track your package online.",
+        icon: Package,
+      },
+    ],
+  };
+
+  const sections: Section[] = [
+    { id: "hero", title: "Home", icon: <Home size={20} /> },
+    { id: "our-work", title: "Our Work", icon: <Briefcase size={20} /> },
+    { id: "values", title: "Our Values", icon: <Users size={20} /> },
+    { id: "how-it-works", title: "How It Works", icon: <Info size={20} /> },
+    { id: "services", title: "Services", icon: <Package size={20} /> },
+    { id: "subscription", title: "Membership", icon: <CreditCard size={20} /> },
+    { id: "locations", title: "Locations", icon: <LocationIcon size={20} /> },
+    { id: "instagram", title: "Instagram", icon: <Instagram size={20} /> },
+    { id: "faq", title: "FAQ", icon: <MessageCircle size={20} /> },
   ];
 
   useEffect(() => {
@@ -134,414 +286,705 @@ export default function V12Resole() {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  const toggleDarkMode = () => {
+    setIsDarkMode((prevMode) => {
+      const newMode = !prevMode;
+      localStorage.setItem("darkMode", newMode.toString());
+      document.documentElement.classList.toggle("dark", newMode);
+      return newMode;
+    });
+  };
+
   return (
-    <div className="min-h-screen bg-gray-100">
-      {/* Header */}
-      <motion.header
-        initial={{ y: -100 }}
-        animate={{ y: 0 }}
-        transition={{ type: "spring", stiffness: 100 }}
-        className="bg-white shadow-md"
+    <div
+      className={`min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 ${
+        isDarkMode ? "dark" : ""
+      }`}
+    >
+      {/* Dark Mode Toggle */}
+      <Button
+        variant="outline"
+        size="icon"
+        className="fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400"
+        onClick={toggleDarkMode}
+        aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
-        <div className="container mx-auto px-4 py-6 flex justify-between items-center">
-          <h1 className="text-3xl font-bold text-gray-800">V12 Resole</h1>
-          <nav className="hidden md:flex space-x-4">
-            <a href="#services" className="text-gray-600 hover:text-gray-800">
-              Services
-            </a>
-            <a href="#values" className="text-gray-600 hover:text-gray-800">
-              Our Values
-            </a>
-            <a href="#locations" className="text-gray-600 hover:text-gray-800">
-              Locations
-            </a>
-            <a href="#faq" className="text-gray-600 hover:text-gray-800">
-              FAQ
-            </a>
-            <a
-              href="#subscription"
-              className="text-gray-600 hover:text-gray-800"
-            >
-              Subscription
-            </a>
-          </nav>
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-          >
-            {mobileMenuOpen ? <X /> : <Menu />}
-          </Button>
-        </div>
-        {mobileMenuOpen && (
-          <motion.nav
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="md:hidden bg-white py-4"
-          >
-            <a
-              href="#services"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-            >
-              Services
-            </a>
-            <a
-              href="#values"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-            >
-              Our Values
-            </a>
-            <a
-              href="#locations"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-            >
-              Locations
-            </a>
-            <a
-              href="#faq"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-            >
-              FAQ
-            </a>
-            <a
-              href="#subscription"
-              className="block px-4 py-2 text-gray-600 hover:bg-gray-100"
-            >
-              Subscription
-            </a>
-          </motion.nav>
+        {isDarkMode ? (
+          <Sun className="h-5 w-5" />
+        ) : (
+          <Moon className="h-5 w-5" />
         )}
-      </motion.header>
+      </Button>
 
-      {/* Hero Section */}
-      <motion.section
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1 }}
-        className="bg-gray-800 text-white py-20"
-      >
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">
-            Expert Climbing Shoe Resole
-          </h2>
-          <p className="text-xl mb-8">
-            Extend the life of your favorite climbing shoes
-          </p>
-          <p className="text-lg mb-8">
-            Now offering monthly and annual subscriptions for exclusive
-            benefits!
-          </p>
-          <Button size="lg">Get Started</Button>
-        </div>
-      </motion.section>
+      {/* Table of Contents */}
+      <TableOfContents sections={sections} />
 
-      {/* Slideshow */}
-      <section className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Work</h2>
-          <div className="relative">
-            <AnimatePresence mode="wait">
-              <motion.img
-                key={currentSlide}
-                src={slides[currentSlide]}
-                alt={`Slide ${currentSlide + 1}`}
-                className="w-full h-[400px] object-cover rounded-lg"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-              />
-            </AnimatePresence>
+      {/* Main Content */}
+      <div>
+        {/* Hero Section */}
+        <AnimatedSection
+          id="hero"
+          className="bg-orange-400 dark:bg-orange-800 text-white py-24"
+        >
+          <div className="container mx-auto px-6 text-center">
+            <h1 className="text-5xl font-bold mb-6">V12 Resole</h1>
+            <h2 className="text-4xl font-bold mb-6">
+              Expert Climbing Shoe Resole
+            </h2>
+            <p className="text-xl mb-8 max-w-2xl mx-auto">
+              Extend the life of your favorite climbing shoes with our
+              professional resoling services.
+            </p>
+            <p className="text-lg mb-12">
+              Now offering monthly and annual subscriptions for exclusive
+              benefits!
+            </p>
             <Button
-              variant="outline"
-              size="icon"
-              className="absolute top-1/2 left-4 transform -translate-y-1/2"
-              onClick={() =>
-                setCurrentSlide((prev) =>
-                  prev === 0 ? slides.length - 1 : prev - 1
-                )
-              }
+              size="lg"
+              className="text-lg px-8 py-4 bg-white text-orange-600 hover:bg-orange-100 dark:bg-gray-800 dark:text-orange-400 dark:hover:bg-gray-700"
             >
-              <ChevronLeft className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="outline"
-              size="icon"
-              className="absolute top-1/2 right-4 transform -translate-y-1/2"
-              onClick={() =>
-                setCurrentSlide((prev) =>
-                  prev === slides.length - 1 ? 0 : prev + 1
-                )
-              }
-            >
-              <ChevronRight className="h-4 w-4" />
+              Get Started
             </Button>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* Values Section */}
-      <section id="values" className="py-16 bg-gray">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Values</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card>
+        {/* Our Work Section */}
+        <AnimatedSection
+          id="our-work"
+          className="py-24 bg-white dark:bg-gray-900"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Our Work
+            </h2>
+            <div className="relative max-w-4xl mx-auto">
+              <AnimatePresence mode="wait">
+                <motion.img
+                  key={currentSlide}
+                  src={slides[currentSlide]}
+                  alt={`Slide ${currentSlide + 1}`}
+                  className="w-full h-[600px] object-cover rounded-lg shadow-lg"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.5 }}
+                />
+              </AnimatePresence>
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+                onClick={() =>
+                  setCurrentSlide((prev) =>
+                    prev === 0 ? slides.length - 1 : prev - 1
+                  )
+                }
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+                onClick={() =>
+                  setCurrentSlide((prev) =>
+                    prev === slides.length - 1 ? 0 : prev + 1
+                  )
+                }
+              >
+                <ChevronRight className="h-6 w-6" />
+              </Button>
+            </div>
+          </div>
+        </AnimatedSection>
+
+        {/* Values Section */}
+        <AnimatedSection
+          id="values"
+          className="py-24 bg-orange-50 dark:bg-gray-800"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Our Values
+            </h2>
+            <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Recycle className="mr-2 h-6 w-6 text-green-500" />
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Recycle className="mr-2 h-8 w-8" />
                     Minimize Waste
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    We strive to reduce waste in every aspect of our business,
-                    from our resoling process to our packaging.
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    We're committed to reducing waste across all operations,
+                    from optimizing our resoling process to using recyclable and
+                    minimal packaging, ensuring we leave as little impact as
+                    possible.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Clock className="mr-2 h-6 w-6 text-blue-500" />
-                    Extend Lifetime
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Clock className="mr-2 h-8 w-8" />
+                    Extend Shoe Life
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    Our goal is to maximize the lifespan of your climbing shoes,
-                    reducing the need for frequent replacements.
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    Our mission is to extend the life of your climbing shoes,
+                    helping you get the most out of each pair and reducing the
+                    demand for new products through careful, high-quality
+                    repairs.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-            >
-              <Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle className="flex items-center">
-                    <Leaf className="mr-2 h-6 w-6 text-green-500" />
-                    Eco-Friendly
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Leaf className="mr-2 h-8 w-8" />
+                    Eco-Friendly Practices
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p>
-                    We use environmentally friendly materials and processes
-                    whenever possible to minimize our ecological footprint.
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    We prioritize eco-friendly materials and processes to lower
+                    our ecological footprint and to support sustainable choices
+                    for climbers.
                   </p>
                 </CardContent>
               </Card>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      {/* Services */}
-      <section id="services" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Services</h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Sole Repair</CardTitle>
-                  <CardDescription>
-                    Restore the grip of your climbing shoes
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Hammer className="mr-2 h-8 w-8" />
+                    Craftsmanship Quality
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    Every resole is handled with expert craftsmanship, ensuring
+                    each shoe performs as intended and feels just right, climb
+                    after climb.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Users className="mr-2 h-8 w-8" />
+                    Customer Partnership
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    We view every climber as a partner in sustainability. We
+                    work closely with our customers, offering tips and advice to
+                    keep shoes in top condition between resoles.
+                  </p>
+                </CardContent>
+              </Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                <CardHeader>
+                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                    <Heart className="mr-2 h-8 w-8" />
+                    Community Engagement
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                    We're invested in the climbing community, supporting local
+                    events, partnering with climbing gyms, and educating
+                    climbers on sustainable practices and shoe care.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </AnimatedSection>
+
+        {/* How It Works Section */}
+        <AnimatedSection
+          id="how-it-works"
+          className="py-24 bg-white dark:bg-gray-900"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              How It Works
+            </h2>
+            <Tabs defaultValue="inPerson" className="w-full max-w-4xl mx-auto">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="inPerson">In-Person Orders</TabsTrigger>
+                <TabsTrigger value="shipped">Shipped Orders</TabsTrigger>
+              </TabsList>
+              <TabsContent value="inPerson">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {howItWorksSteps.inPerson.map((step, index) => (
+                    <Card
+                      key={index}
+                      className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800"
+                    >
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                          <step.icon className="mr-2 h-8 w-8" />#{index + 1}{" "}
+                          {step.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-lg text-gray-600 dark:text-gray-300">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="shipped">
+                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+                  {howItWorksSteps.shipped.map((step, index) => (
+                    <Card
+                      key={index}
+                      className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800"
+                    >
+                      <CardHeader>
+                        <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                          <step.icon className="mr-2 h-8 w-8" />#{index + 1}{" "}
+                          {step.title}
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                        <p className="text-lg text-gray-600 dark:text-gray-300">
+                          {step.description}
+                        </p>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </AnimatedSection>
+
+        {/* Services Section */}
+        <AnimatedSection
+          id="services"
+          className="py-24 bg-white dark:bg-gray-900"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Our Services
+            </h2>
+            <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+                <CardHeader>
+                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                    Sole Repair
+                  </CardTitle>
+                  <CardDescription className="dark:text-gray-400">
+                    Replacement of rubber on the front sole. Restore the grip of
+                    your climbing shoes.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">$55</p>
+                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                    $55
+                  </p>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                    Estimated Lead Time: 2-3 weeks
+                  </p>
+                  <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                    Available Rubber Options:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                    <li>Unparallel Real Honor</li>
+                    <li>Vibram Grip</li>
+                    <li>Madrock Science Friction</li>
+                  </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">Order Now</Button>
+                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                    Order Now
+                  </Button>
                 </CardFooter>
               </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
                 <CardHeader>
-                  <CardTitle>Rand Repair</CardTitle>
-                  <CardDescription>
-                    Fix the rand for better performance
+                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                    Rand Repair
+                  </CardTitle>
+                  <CardDescription className="dark:text-gray-400">
+                    Replacement of rubber on the rand and front sole. Fix the
+                    rand for better performance.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold">$65</p>
+                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                    $65
+                  </p>
+                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                    Estimated Lead Time: 3-4 weeks
+                  </p>
+                  <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                    Includes:
+                  </p>
+                  <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                    <li>Rand repair</li>
+                    <li>Sole replacement</li>
+                    <li>Choice of rubber options (same as Sole Repair)</li>
+                  </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">Order Now</Button>
+                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                    Order Now
+                  </Button>
                 </CardFooter>
               </Card>
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* Subscription Model */}
-      <section id="subscription" className="py-16 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Membership Options
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5 }}
-            >
-              <Card>
+        {/* Subscription Model */}
+        <AnimatedSection
+          id="subscription"
+          className="py-24 bg-orange-50 dark:bg-gray-800"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Membership Options
+            </h2>
+            <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Monthly Membership</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                    Monthly Membership
+                  </CardTitle>
+                  <CardDescription className="dark:text-gray-400">
                     Flexible benefits for climbers
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold mb-4">$4.99/month</p>
-                  <ul className="space-y-2">
+                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                    $4.99/month
+                  </p>
+                  <ul className="space-y-4">
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      Free shipping on all orders
+                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                        Free shipping on all orders
+                      </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      Free rand repair
+                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                        Free rand repair
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">Subscribe Monthly</Button>
+                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                    Subscribe Monthly
+                  </Button>
                 </CardFooter>
               </Card>
-            </motion.div>
-            <motion.div
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-            >
-              <Card>
+              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
                 <CardHeader>
-                  <CardTitle>Annual Membership</CardTitle>
-                  <CardDescription>
+                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                    Annual Membership
+                  </CardTitle>
+                  <CardDescription className="dark:text-gray-400">
                     Best value for dedicated climbers
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-2xl font-bold mb-4">$60/year</p>
-                  <ul className="space-y-2">
+                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                    $60/year
+                  </p>
+                  <ul className="space-y-4">
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      Free shipping on all orders
+                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                        Free shipping on all orders
+                      </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      Free rand repair
+                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                        Free rand repair
+                      </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-4 w-4 text-green-500" />
-                      One free shoe repair
+                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                        One free shoe repair (Sole + Rand)
+                      </span>
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full">Subscribe Annually</Button>
+                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                    Subscribe Annually
+                  </Button>
                 </CardFooter>
               </Card>
-            </motion.div>
+            </div>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* Locations */}
-      <section id="locations" className="py-16 bg-white">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">Our Locations</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
-            {locations.map((location, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <Card>
+        <section
+          id="services-and-membership"
+          className="py-24 bg-orange-50 dark:bg-gray-800"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Our Services and Membership Options
+            </h2>
+            <Tabs defaultValue="single" className="w-full max-w-4xl mx-auto">
+              <TabsList className="grid w-full grid-cols-2 mb-8">
+                <TabsTrigger value="single">Single Service</TabsTrigger>
+                <TabsTrigger value="membership">Membership</TabsTrigger>
+              </TabsList>
+              <TabsContent value="single">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                        Sole Repair
+                      </CardTitle>
+                      <CardDescription className="dark:text-gray-400">
+                        Replacement of rubber on the front sole. Restore the
+                        grip of your climbing shoes.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                        $55
+                      </p>
+                      <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                        Estimated Lead Time: 2-3 weeks
+                      </p>
+                      <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                        Available Rubber Options:
+                      </p>
+                      <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                        <li>Unparallel Real Honor</li>
+                        <li>Vibram Grip</li>
+                        <li>Madrock Science Friction</li>
+                      </ul>
+                    </CardContent>
+                    <CardFooter>
+                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                        Order Sole Repair
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                        Rand Repair
+                      </CardTitle>
+                      <CardDescription className="dark:text-gray-400">
+                        Replacement of rubber on the rand and front sole. Fix
+                        the rand for better performance.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                        $65
+                      </p>
+                      <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                        Estimated Lead Time: 3-4 weeks
+                      </p>
+                      <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
+                        Includes:
+                      </p>
+                      <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                        <li>Rand repair</li>
+                        <li>Sole replacement</li>
+                        <li>Choice of rubber options (same as Sole Repair)</li>
+                      </ul>
+                    </CardContent>
+                    <CardFooter>
+                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                        Order Rand Repair
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </TabsContent>
+              <TabsContent value="membership">
+                <div className="grid md:grid-cols-2 gap-8">
+                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                        Monthly Membership
+                      </CardTitle>
+                      <CardDescription className="dark:text-gray-400">
+                        Flexible benefits for climbers
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                        $4.99/month
+                      </p>
+                      <ul className="space-y-4">
+                        <li className="flex items-center">
+                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                            Free shipping on all orders
+                          </span>
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                            Free rand repair
+                          </span>
+                        </li>
+                      </ul>
+                    </CardContent>
+                    <CardFooter>
+                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                        Subscribe Monthly
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                    <CardHeader>
+                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                        Annual Membership
+                      </CardTitle>
+                      <CardDescription className="dark:text-gray-400">
+                        Best value for dedicated climbers
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                        $60/year
+                      </p>
+                      <ul className="space-y-4">
+                        <li className="flex items-center">
+                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                            Free shipping on all orders
+                          </span>
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                            Free rand repair
+                          </span>
+                        </li>
+                        <li className="flex items-center">
+                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
+                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                            One free shoe repair (Sole + Rand)
+                          </span>
+                        </li>
+                      </ul>
+                    </CardContent>
+                    <CardFooter>
+                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                        Subscribe Annually
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                </div>
+              </TabsContent>
+            </Tabs>
+          </div>
+        </section>
+
+        {/* Locations */}
+        <AnimatedSection
+          id="locations"
+          className="py-24 bg-white dark:bg-gray-900"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Our Locations
+            </h2>
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
+              {locations.map((location, index) => (
+                <Card
+                  key={index}
+                  className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900"
+                >
                   <CardContent className="flex items-center justify-center p-6">
-                    <MapPin className="mr-2 h-4 w-4" />
-                    <span>{location}</span>
+                    <MapPin className="mr-2 h-6 w-6 text-orange-600 dark:text-orange-400" />
+                    <span className="text-lg text-gray-600 dark:text-gray-300">
+                      {location}
+                    </span>
                   </CardContent>
                 </Card>
-              </motion.div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* Instagram Feed */}
-      <section className="py-16 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Follow Us on Instagram
-          </h2>
-          <InstagramFeed
-            username="V12resole"
-            maxPosts={8} // Limit number of posts displayed
-            className="grid grid-cols-2 md:grid-cols-4 gap-4"
-          />
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg">
-              <Instagram className="mr-2 h-4 w-4" />
+        {/* Instagram Feed */}
+        <AnimatedSection
+          id="instagram"
+          className="py-24 bg-orange-50 dark:bg-gray-800"
+        >
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
               Follow Us on Instagram
-            </Button>
+            </h2>
+            <div className="max-w-5xl mx-auto">
+              <InstagramFeed token="YOUR_INSTAGRAM_ACCESS_TOKEN" counter="6" />
+            </div>
+            <div className="text-center mt-12">
+              <Button
+                variant="outline"
+                size="lg"
+                className="text-lg px-8 py-4 border-orange-600 text-orange-600 hover:bg-orange-100 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-gray-800"
+              >
+                <Instagram className="mr-2 h-6 w-6" />
+                Follow Us on Instagram
+              </Button>
+            </div>
           </div>
-        </div>
-      </section>
+        </AnimatedSection>
 
-      {/* FAQ */}
-      <section id="faq" className="py-16 bg-gray-100">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-8">
-            Frequently Asked Questions
-          </h2>
-          <Accordion type="single" collapsible className="w-full">
-            {faqItems.map((item, index) => (
-              <AccordionItem value={`item-${index}`} key={index}>
-                <AccordionTrigger>{item.question}</AccordionTrigger>
-                <AccordionContent>{item.answer}</AccordionContent>
-              </AccordionItem>
-            ))}
-          </Accordion>
-        </div>
-      </section>
+        {/* FAQ */}
+        <AnimatedSection id="faq" className="py-24 bg-white dark:bg-gray-900">
+          <div className="container mx-auto px-6">
+            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+              Frequently Asked Questions
+            </h2>
+            <Accordion
+              type="single"
+              collapsible
+              className="w-full max-w-3xl mx-auto"
+            >
+              {faqItems.map((item, index) => (
+                <AccordionItem
+                  value={`item-${index}`}
+                  key={index}
+                  className="border-orange-200 dark:border-orange-800"
+                >
+                  <AccordionTrigger className="text-lg text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300">
+                    {item.question}
+                  </AccordionTrigger>
+                  <AccordionContent className="text-base text-gray-600 dark:text-gray-300">
+                    {item.answer}
+                  </AccordionContent>
+                </AccordionItem>
+              ))}
+            </Accordion>
+          </div>
+        </AnimatedSection>
 
-      {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8">
-        <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 V12 Resole. All rights reserved.</p>
-        </div>
-      </footer>
+        {/* Footer */}
+        <footer className="bg-orange-600 dark:bg-orange-800 text-white py-12">
+          <div className="container mx-auto px-6 text-center">
+            <p className="text-lg">
+              &copy; 2023 V12 Resole. All rights reserved.
+            </p>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
