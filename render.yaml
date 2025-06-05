@@ -1,0 +1,5 @@
+services:
+  - type: static_site
+    name: v12-resole-website
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./out

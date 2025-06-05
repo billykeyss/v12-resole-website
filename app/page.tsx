@@ -1,54 +1,81 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useInView } from "framer-motion";
-import {
-  ChevronLeft,
-  ChevronRight,
-  MapPin,
-  Menu,
-  X,
-  CheckCircle,
-  Instagram,
-  Recycle,
-  Clock,
-  Leaf,
-  ShoppingCart,
-  Box,
-  Bell,
-  Package,
-  Sun,
-  Moon,
-  Home,
-  Info,
-  Briefcase,
-  Users,
-  CreditCard,
-  MapPin as LocationIcon,
-  MessageCircle,
-  Hammer,
-  Heart,
-  Scissors,
-  Truck,
-} from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import InstagramFeed from "react-instagram-feed";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import Link from "next/link";
+import { AnimatePresence, motion, useInView } from "framer-motion";
+import {
+  Bell,
+  Box,
+  Briefcase,
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Clock,
+  CreditCard,
+  Hammer,
+  Heart,
+  Home,
+  Info,
+  Instagram,
+  Leaf,
+  MapPin as LocationIcon,
+  MapPin,
+  MessageCircle,
+  Moon,
+  Package,
+  Recycle,
+  Scissors,
+  ShoppingCart,
+  Sun,
+  Truck,
+  Users,
+} from "lucide-react";
+import Image from "next/image";
+import { useEffect, useRef, useState } from "react";
+
+// Color scheme constants
+const COLORS = {
+  light: {
+    background: "bg-orange-50",
+    heroBackground: "bg-orange-200",
+    cardBorder: "border-orange-200",
+    text: {
+      primary: "text-red-600",
+      body: "text-gray-600",
+    },
+    button: {
+      primary: "bg-red-400 hover:bg-red-500 text-white",
+      outline: "border-red-400 text-red-600 hover:bg-orange-100",
+    },
+  },
+  dark: {
+    background: "bg-gray-900",
+    heroBackground: "bg-red-800",
+    cardBorder: "border-red-800",
+    text: {
+      primary: "text-red-400",
+      body: "text-gray-300",
+    },
+    button: {
+      primary: "bg-red-700 hover:bg-red-600 text-orange-100",
+      outline: "border-red-300 text-red-300 hover:bg-gray-800",
+    },
+  },
+};
 
 interface Section {
   id: string;
@@ -122,8 +149,8 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
               onClick={() => setActiveSection(section.id)}
               className={`flex items-center justify-center w-10 h-10 rounded-full shadow-lg transition-colors ${
                 activeSection === section.id
-                  ? "bg-orange-600 text-white"
-                  : "bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+                  ? "bg-orange-200 text-red-700"
+                  : `bg-white dark:bg-gray-800 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} hover:${COLORS.light.background} dark:hover:bg-gray-700`
               }`}
               title={section.title}
             >
@@ -136,7 +163,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
   );
 };
 
-export default function V12Resole() {
+export default function V12ResolePastel() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -297,15 +324,33 @@ export default function V12Resole() {
 
   return (
     <div
-      className={`min-h-screen bg-white dark:bg-gray-900 transition-colors duration-300 ${
-        isDarkMode ? "dark" : ""
-      }`}
+      className={`min-h-screen ${COLORS.light.background} dark:${
+        COLORS.dark.background
+      } transition-colors duration-300 ${isDarkMode ? "dark" : ""}`}
     >
+      <div
+        className={`fixed top-0 left-0 w-full z-50 ${
+          isDarkMode ? "bg-gray-800 text-white" : "bg-orange-50 text-red-600"
+        } py-2 px-4 shadow-md`}
+      >
+        <div className="flex flex-col justify-center items-center">
+          <p className="text-sm font-medium">
+            🌟 Get 20% off on your first resole! Use code: CLIMB20
+          </p>
+          {/* <button
+            className="text-sm underline focus:outline-none"
+            onClick={() => alert("Learn more clicked!")}
+          >
+            Learn more
+          </button> */}
+        </div>
+      </div>
+
       {/* Dark Mode Toggle */}
       <Button
         variant="outline"
         size="icon"
-        className="fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 border-orange-600 dark:border-orange-400"
+        className={`fixed top-4 right-4 z-50 bg-white dark:bg-gray-800 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder}`}
         onClick={toggleDarkMode}
         aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
       >
@@ -324,7 +369,7 @@ export default function V12Resole() {
         {/* Hero Section */}
         <AnimatedSection
           id="hero"
-          className="bg-orange-400 dark:bg-orange-800 text-white py-24"
+          className={`${COLORS.light.heroBackground} dark:${COLORS.dark.heroBackground} text-red-900 dark:text-orange-100 py-24`}
         >
           <div className="container mx-auto px-6 text-center">
             <h1 className="text-5xl font-bold mb-6">V12 Resole</h1>
@@ -341,7 +386,7 @@ export default function V12Resole() {
             </p>
             <Button
               size="lg"
-              className="text-lg px-8 py-4 bg-white text-orange-600 hover:bg-orange-100 dark:bg-gray-800 dark:text-orange-400 dark:hover:bg-gray-700"
+              className={`text-lg px-8 py-4 ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
             >
               Get Started
             </Button>
@@ -351,29 +396,36 @@ export default function V12Resole() {
         {/* Our Work Section */}
         <AnimatedSection
           id="our-work"
-          className="py-24 bg-white dark:bg-gray-900"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Our Work
             </h2>
             <div className="relative max-w-4xl mx-auto">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={currentSlide}
-                  src={slides[currentSlide]}
-                  alt={`Slide ${currentSlide + 1}`}
-                  className="w-full h-[600px] object-cover rounded-lg shadow-lg"
+                  className="w-full h-[600px] relative rounded-lg shadow-lg overflow-hidden"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.5 }}
-                />
+                >
+                  <Image
+                    src={slides[currentSlide]}
+                    alt={`Slide ${currentSlide + 1}`}
+                    layout="fill"
+                    objectFit="cover"
+                  />
+                </motion.div>
               </AnimatePresence>
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+                className={`absolute top-1/2 left-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} hover:${COLORS.light.background} dark:hover:bg-gray-700`}
                 onClick={() =>
                   setCurrentSlide((prev) =>
                     prev === 0 ? slides.length - 1 : prev - 1
@@ -385,7 +437,7 @@ export default function V12Resole() {
               <Button
                 variant="outline"
                 size="icon"
-                className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-gray-700"
+                className={`absolute top-1/2 right-4 transform -translate-y-1/2 bg-white dark:bg-gray-800 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} hover:${COLORS.light.background} dark:hover:bg-gray-700`}
                 onClick={() =>
                   setCurrentSlide((prev) =>
                     prev === slides.length - 1 ? 0 : prev + 1
@@ -401,38 +453,52 @@ export default function V12Resole() {
         {/* Values Section */}
         <AnimatedSection
           id="values"
-          className="py-24 bg-orange-50 dark:bg-gray-800"
+          className="py-24 bg-orange-100 dark:bg-gray-800"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Our Values
             </h2>
             <div className="grid md:grid-cols-3 gap-12 max-w-5xl mx-auto">
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Recycle className="mr-2 h-8 w-8" />
                     Minimize Waste
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
-                    We're committed to reducing waste across all operations,
-                    from optimizing our resoling process to using recyclable and
-                    minimal packaging, ensuring we leave as little impact as
-                    possible.
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
+                    We&apos;re committed to reducing waste across all
+                    operations, from optimizing our resoling process to using
+                    recyclable and minimal packaging, ensuring we leave as
+                    little impact as possible.
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Clock className="mr-2 h-8 w-8" />
                     Extend Shoe Life
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     Our mission is to extend the life of your climbing shoes,
                     helping you get the most out of each pair and reducing the
                     demand for new products through careful, high-quality
@@ -440,62 +506,86 @@ export default function V12Resole() {
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Leaf className="mr-2 h-8 w-8" />
                     Eco-Friendly Practices
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     We prioritize eco-friendly materials and processes to lower
                     our ecological footprint and to support sustainable choices
                     for climbers.
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Hammer className="mr-2 h-8 w-8" />
                     Craftsmanship Quality
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     Every resole is handled with expert craftsmanship, ensuring
                     each shoe performs as intended and feels just right, climb
                     after climb.
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Users className="mr-2 h-8 w-8" />
                     Customer Partnership
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     We view every climber as a partner in sustainability. We
                     work closely with our customers, offering tips and advice to
                     keep shoes in top condition between resoles.
                   </p>
                 </CardContent>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     <Heart className="mr-2 h-8 w-8" />
                     Community Engagement
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-lg text-gray-600 dark:text-gray-300">
-                    We're invested in the climbing community, supporting local
-                    events, partnering with climbing gyms, and educating
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
+                    We&apos;re invested in the climbing community, supporting
+                    local events, partnering with climbing gyms, and educating
                     climbers on sustainable practices and shoe care.
                   </p>
                 </CardContent>
@@ -507,10 +597,12 @@ export default function V12Resole() {
         {/* How It Works Section */}
         <AnimatedSection
           id="how-it-works"
-          className="py-24 bg-white dark:bg-gray-900"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               How It Works
             </h2>
             <Tabs defaultValue="inPerson" className="w-full max-w-4xl mx-auto">
@@ -523,16 +615,20 @@ export default function V12Resole() {
                   {howItWorksSteps.inPerson.map((step, index) => (
                     <Card
                       key={index}
-                      className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800"
+                      className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
                     >
                       <CardHeader>
-                        <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                        <CardTitle
+                          className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                        >
                           <step.icon className="mr-2 h-8 w-8" />#{index + 1}{" "}
                           {step.title}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-lg text-gray-600 dark:text-gray-300">
+                        <p
+                          className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                        >
                           {step.description}
                         </p>
                       </CardContent>
@@ -545,16 +641,20 @@ export default function V12Resole() {
                   {howItWorksSteps.shipped.map((step, index) => (
                     <Card
                       key={index}
-                      className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800"
+                      className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
                     >
                       <CardHeader>
-                        <CardTitle className="flex items-center text-2xl text-orange-600 dark:text-orange-400">
+                        <CardTitle
+                          className={`flex items-center text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                        >
                           <step.icon className="mr-2 h-8 w-8" />#{index + 1}{" "}
                           {step.title}
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <p className="text-lg text-gray-600 dark:text-gray-300">
+                        <p
+                          className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                        >
                           {step.description}
                         </p>
                       </CardContent>
@@ -569,16 +669,22 @@ export default function V12Resole() {
         {/* Services Section */}
         <AnimatedSection
           id="services"
-          className="py-24 bg-white dark:bg-gray-900"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Our Services
             </h2>
             <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-900`}
+              >
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     Sole Repair
                   </CardTitle>
                   <CardDescription className="dark:text-gray-400">
@@ -587,30 +693,42 @@ export default function V12Resole() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                  <p
+                    className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-4`}
+                  >
                     $55
                   </p>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body} mb-2`}
+                  >
                     Estimated Lead Time: 2-3 weeks
                   </p>
                   <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
                     Available Rubber Options:
                   </p>
-                  <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                  <ul
+                    className={`list-disc list-inside ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     <li>Unparallel Real Honor</li>
                     <li>Vibram Grip</li>
                     <li>Madrock Science Friction</li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                  <Button
+                    className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                  >
                     Order Now
                   </Button>
                 </CardFooter>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-900`}
+              >
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     Rand Repair
                   </CardTitle>
                   <CardDescription className="dark:text-gray-400">
@@ -619,23 +737,31 @@ export default function V12Resole() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                  <p
+                    className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-4`}
+                  >
                     $65
                   </p>
-                  <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                  <p
+                    className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body} mb-2`}
+                  >
                     Estimated Lead Time: 3-4 weeks
                   </p>
                   <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
                     Includes:
                   </p>
-                  <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                  <ul
+                    className={`list-disc list-inside ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     <li>Rand repair</li>
                     <li>Sole replacement</li>
                     <li>Choice of rubber options (same as Sole Repair)</li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                  <Button
+                    className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                  >
                     Order Now
                   </Button>
                 </CardFooter>
@@ -647,16 +773,22 @@ export default function V12Resole() {
         {/* Subscription Model */}
         <AnimatedSection
           id="subscription"
-          className="py-24 bg-orange-50 dark:bg-gray-800"
+          className="py-24 bg-orange-100 dark:bg-gray-800"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Membership Options
             </h2>
             <div className="grid md:grid-cols-2 gap-12 max-w-4xl mx-auto">
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     Monthly Membership
                   </CardTitle>
                   <CardDescription className="dark:text-gray-400">
@@ -664,33 +796,49 @@ export default function V12Resole() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                  <p
+                    className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-6`}
+                  >
                     $4.99/month
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                      <CheckCircle
+                        className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      />
+                      <span
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         Free shipping on all orders
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                      <CheckCircle
+                        className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      />
+                      <span
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         Free rand repair
                       </span>
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                  <Button
+                    className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                  >
                     Subscribe Monthly
                   </Button>
                 </CardFooter>
               </Card>
-              <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+              <Card
+                className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+              >
                 <CardHeader>
-                  <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                  <CardTitle
+                    className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                  >
                     Annual Membership
                   </CardTitle>
                   <CardDescription className="dark:text-gray-400">
@@ -698,32 +846,48 @@ export default function V12Resole() {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                  <p
+                    className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-6`}
+                  >
                     $60/year
                   </p>
                   <ul className="space-y-4">
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                      <CheckCircle
+                        className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      />
+                      <span
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         Free shipping on all orders
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                      <CheckCircle
+                        className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      />
+                      <span
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         Free rand repair
                       </span>
                     </li>
                     <li className="flex items-center">
-                      <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                      <span className="text-lg text-gray-600 dark:text-gray-300">
+                      <CheckCircle
+                        className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      />
+                      <span
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         One free shoe repair (Sole + Rand)
                       </span>
                     </li>
                   </ul>
                 </CardContent>
                 <CardFooter>
-                  <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                  <Button
+                    className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                  >
                     Subscribe Annually
                   </Button>
                 </CardFooter>
@@ -732,12 +896,14 @@ export default function V12Resole() {
           </div>
         </AnimatedSection>
 
-        <section
+        <AnimatedSection
           id="services-and-membership"
-          className="py-24 bg-orange-50 dark:bg-gray-800"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Our Services and Membership Options
             </h2>
             <Tabs defaultValue="single" className="w-full max-w-4xl mx-auto">
@@ -747,9 +913,13 @@ export default function V12Resole() {
               </TabsList>
               <TabsContent value="single">
                 <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+                  <Card
+                    className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-900`}
+                  >
                     <CardHeader>
-                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                      <CardTitle
+                        className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      >
                         Sole Repair
                       </CardTitle>
                       <CardDescription className="dark:text-gray-400">
@@ -758,30 +928,42 @@ export default function V12Resole() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                      <p
+                        className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-4`}
+                      >
                         $55
                       </p>
-                      <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                      <p
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body} mb-2`}
+                      >
                         Estimated Lead Time: 2-3 weeks
                       </p>
                       <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
                         Available Rubber Options:
                       </p>
-                      <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                      <ul
+                        className={`list-disc list-inside ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         <li>Unparallel Real Honor</li>
                         <li>Vibram Grip</li>
                         <li>Madrock Science Friction</li>
                       </ul>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                      <Button
+                        className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                      >
                         Order Sole Repair
                       </Button>
                     </CardFooter>
                   </Card>
-                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900">
+                  <Card
+                    className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-900`}
+                  >
                     <CardHeader>
-                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                      <CardTitle
+                        className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      >
                         Rand Repair
                       </CardTitle>
                       <CardDescription className="dark:text-gray-400">
@@ -790,23 +972,31 @@ export default function V12Resole() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-4">
+                      <p
+                        className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-4`}
+                      >
                         $65
                       </p>
-                      <p className="text-lg text-gray-600 dark:text-gray-300 mb-2">
+                      <p
+                        className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body} mb-2`}
+                      >
                         Estimated Lead Time: 3-4 weeks
                       </p>
                       <p className="text-lg font-semibold text-gray-700 dark:text-gray-200 mb-2">
                         Includes:
                       </p>
-                      <ul className="list-disc list-inside text-gray-600 dark:text-gray-300">
+                      <ul
+                        className={`list-disc list-inside ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                      >
                         <li>Rand repair</li>
                         <li>Sole replacement</li>
                         <li>Choice of rubber options (same as Sole Repair)</li>
                       </ul>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                      <Button
+                        className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                      >
                         Order Rand Repair
                       </Button>
                     </CardFooter>
@@ -815,9 +1005,13 @@ export default function V12Resole() {
               </TabsContent>
               <TabsContent value="membership">
                 <div className="grid md:grid-cols-2 gap-8">
-                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                  <Card
+                    className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+                  >
                     <CardHeader>
-                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                      <CardTitle
+                        className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      >
                         Monthly Membership
                       </CardTitle>
                       <CardDescription className="dark:text-gray-400">
@@ -825,33 +1019,49 @@ export default function V12Resole() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                      <p
+                        className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-6`}
+                      >
                         $4.99/month
                       </p>
                       <ul className="space-y-4">
                         <li className="flex items-center">
-                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                          <CheckCircle
+                            className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                          />
+                          <span
+                            className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                          >
                             Free shipping on all orders
                           </span>
                         </li>
                         <li className="flex items-center">
-                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                          <CheckCircle
+                            className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                          />
+                          <span
+                            className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                          >
                             Free rand repair
                           </span>
                         </li>
                       </ul>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                      <Button
+                        className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                      >
                         Subscribe Monthly
                       </Button>
                     </CardFooter>
                   </Card>
-                  <Card className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-800">
+                  <Card
+                    className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-800`}
+                  >
                     <CardHeader>
-                      <CardTitle className="text-2xl text-orange-600 dark:text-orange-400">
+                      <CardTitle
+                        className={`text-2xl ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                      >
                         Annual Membership
                       </CardTitle>
                       <CardDescription className="dark:text-gray-400">
@@ -859,32 +1069,48 @@ export default function V12Resole() {
                       </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <p className="text-3xl font-bold text-orange-600 dark:text-orange-400 mb-6">
+                      <p
+                        className={`text-3xl font-bold ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} mb-6`}
+                      >
                         $60/year
                       </p>
                       <ul className="space-y-4">
                         <li className="flex items-center">
-                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                          <CheckCircle
+                            className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                          />
+                          <span
+                            className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                          >
                             Free shipping on all orders
                           </span>
                         </li>
                         <li className="flex items-center">
-                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                          <CheckCircle
+                            className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                          />
+                          <span
+                            className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                          >
                             Free rand repair
                           </span>
                         </li>
                         <li className="flex items-center">
-                          <CheckCircle className="mr-2 h-5 w-5 text-orange-600 dark:text-orange-400" />
-                          <span className="text-lg text-gray-600 dark:text-gray-300">
+                          <CheckCircle
+                            className={`mr-2 h-5 w-5 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                          />
+                          <span
+                            className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                          >
                             One free shoe repair (Sole + Rand)
                           </span>
                         </li>
                       </ul>
                     </CardContent>
                     <CardFooter>
-                      <Button className="w-full text-lg bg-orange-600 hover:bg-orange-700 text-white dark:bg-orange-700 dark:hover:bg-orange-600">
+                      <Button
+                        className={`w-full text-lg ${COLORS.light.button.primary} dark:${COLORS.dark.button.primary}`}
+                      >
                         Subscribe Annually
                       </Button>
                     </CardFooter>
@@ -893,26 +1119,32 @@ export default function V12Resole() {
               </TabsContent>
             </Tabs>
           </div>
-        </section>
+        </AnimatedSection>
 
         {/* Locations */}
         <AnimatedSection
           id="locations"
-          className="py-24 bg-white dark:bg-gray-900"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Our Locations
             </h2>
             <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto">
               {locations.map((location, index) => (
                 <Card
                   key={index}
-                  className="shadow-lg border-orange-200 dark:border-orange-800 dark:bg-gray-900"
+                  className={`shadow-lg ${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder} dark:bg-gray-900`}
                 >
                   <CardContent className="flex items-center justify-center p-6">
-                    <MapPin className="mr-2 h-6 w-6 text-orange-600 dark:text-orange-400" />
-                    <span className="text-lg text-gray-600 dark:text-gray-300">
+                    <MapPin
+                      className={`mr-2 h-6 w-6 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+                    />
+                    <span
+                      className={`text-lg ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                    >
                       {location}
                     </span>
                   </CardContent>
@@ -925,20 +1157,23 @@ export default function V12Resole() {
         {/* Instagram Feed */}
         <AnimatedSection
           id="instagram"
-          className="py-24 bg-orange-50 dark:bg-gray-800"
+          className="py-24 bg-orange-100 dark:bg-gray-800"
         >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Follow Us on Instagram
             </h2>
             <div className="max-w-5xl mx-auto">
-              <InstagramFeed token="YOUR_INSTAGRAM_ACCESS_TOKEN" counter="6" />
+              {/* Placeholder for Instagram feed */}
+              <p>Instagram feed placeholder</p>
             </div>
             <div className="text-center mt-12">
               <Button
                 variant="outline"
                 size="lg"
-                className="text-lg px-8 py-4 border-orange-600 text-orange-600 hover:bg-orange-100 dark:border-orange-400 dark:text-orange-400 dark:hover:bg-gray-800"
+                className={`text-lg px-8 py-4 ${COLORS.light.button.outline} dark:${COLORS.dark.button.outline}`}
               >
                 <Instagram className="mr-2 h-6 w-6" />
                 Follow Us on Instagram
@@ -948,9 +1183,14 @@ export default function V12Resole() {
         </AnimatedSection>
 
         {/* FAQ */}
-        <AnimatedSection id="faq" className="py-24 bg-white dark:bg-gray-900">
+        <AnimatedSection
+          id="faq"
+          className={`py-24 ${COLORS.light.background} dark:${COLORS.dark.background}`}
+        >
           <div className="container mx-auto px-6">
-            <h2 className="text-4xl font-bold text-center mb-12 text-orange-600 dark:text-orange-400">
+            <h2
+              className={`text-4xl font-bold text-center mb-12 ${COLORS.light.text.primary} dark:${COLORS.dark.text.primary}`}
+            >
               Frequently Asked Questions
             </h2>
             <Accordion
@@ -962,12 +1202,16 @@ export default function V12Resole() {
                 <AccordionItem
                   value={`item-${index}`}
                   key={index}
-                  className="border-orange-200 dark:border-orange-800"
+                  className={`${COLORS.light.cardBorder} dark:${COLORS.dark.cardBorder}`}
                 >
-                  <AccordionTrigger className="text-lg text-orange-600 hover:text-orange-700 dark:text-orange-400 dark:hover:text-orange-300">
+                  <AccordionTrigger
+                    className={`text-lg ${COLORS.light.text.primary} hover:${COLORS.light.text.primary} dark:${COLORS.dark.text.primary} dark:hover:${COLORS.dark.text.primary}`}
+                  >
                     {item.question}
                   </AccordionTrigger>
-                  <AccordionContent className="text-base text-gray-600 dark:text-gray-300">
+                  <AccordionContent
+                    className={`text-base ${COLORS.light.text.body} dark:${COLORS.dark.text.body}`}
+                  >
                     {item.answer}
                   </AccordionContent>
                 </AccordionItem>
@@ -977,7 +1221,7 @@ export default function V12Resole() {
         </AnimatedSection>
 
         {/* Footer */}
-        <footer className="bg-orange-600 dark:bg-orange-800 text-white py-12">
+        <footer className="bg-red-400 dark:bg-red-800 text-white py-12">
           <div className="container mx-auto px-6 text-center">
             <p className="text-lg">
               &copy; 2023 V12 Resole. All rights reserved.
