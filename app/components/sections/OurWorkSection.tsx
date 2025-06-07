@@ -1,13 +1,22 @@
 "use client";
 
-import { Box, Container, Typography, IconButton } from "@mui/material";
+import {
+  Box,
+  Container,
+  Typography,
+  IconButton,
+  useTheme,
+} from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import AnimatedSection from "../ui/AnimatedSection";
+import { SECTION_STYLES, TYPOGRAPHY_STYLES } from "../../styles/theme";
 
 const OurWorkSection: React.FC = () => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
   const [currentSlide, setCurrentSlide] = useState(0);
 
   const slides = [
@@ -30,20 +39,18 @@ const OurWorkSection: React.FC = () => {
     <AnimatedSection
       id="our-work"
       sx={{
-        py: 8,
-        backgroundColor: "#FFFFFF",
+        py: SECTION_STYLES.PADDING,
+        background: SECTION_STYLES.BACKGROUNDS.DEFAULT(isDark),
         position: "relative",
       }}
     >
-      <Container maxWidth="lg" sx={{ px: 3 }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Typography
           variant="h2"
           component="h2"
           sx={{
-            fontWeight: 600,
-            textAlign: "center",
-            mb: 6,
-            color: "#2C3E50",
+            ...TYPOGRAPHY_STYLES.SECTION_TITLE,
+            ...TYPOGRAPHY_STYLES.GRADIENT_TEXT(isDark),
           }}
         >
           Our Work
@@ -61,15 +68,17 @@ const OurWorkSection: React.FC = () => {
                 width: "100%",
                 height: "500px",
                 position: "relative",
-                borderRadius: "0px",
+                borderRadius: `${theme.shape.borderRadius}px`,
                 overflow: "hidden",
-                border: "2px solid #2E5B31",
-                boxShadow: "0 0 30px rgba(46, 91, 49, 0.2)",
+                border: `2px solid ${theme.palette.primary.main}`,
+                boxShadow: isDark
+                  ? "0 20px 40px rgba(0, 0, 0, 0.4)"
+                  : "0 20px 40px rgba(59, 130, 246, 0.2)",
               }}
             >
               <Image
                 src={slides[currentSlide]}
-                alt={`Slide ${currentSlide + 1}`}
+                alt={`Professional Resole ${currentSlide + 1}`}
                 layout="fill"
                 objectFit="cover"
               />
@@ -80,12 +89,16 @@ const OurWorkSection: React.FC = () => {
                   left: 0,
                   right: 0,
                   background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
-                  p: 2,
+                  p: 3,
                 }}
               >
                 <Typography
                   variant="h6"
-                  sx={{ color: "#2E5B31", fontWeight: 700 }}
+                  sx={{
+                    color: theme.palette.primary.main,
+                    fontWeight: 700,
+                    textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+                  }}
                 >
                   PROFESSIONAL RESOLE #{currentSlide + 1}
                 </Typography>
@@ -100,14 +113,15 @@ const OurWorkSection: React.FC = () => {
               top: "50%",
               left: -20,
               transform: "translateY(-50%)",
-              backgroundColor: "#8B4513",
+              backgroundColor: theme.palette.primary.main,
               color: "#FFFFFF",
               width: 50,
               height: 50,
               "&:hover": {
-                backgroundColor: "#A0522D",
+                backgroundColor: theme.palette.primary.dark,
                 transform: "translateY(-50%) scale(1.05)",
               },
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
             onClick={() =>
               setCurrentSlide((prev) =>
@@ -123,14 +137,15 @@ const OurWorkSection: React.FC = () => {
               top: "50%",
               right: -20,
               transform: "translateY(-50%)",
-              backgroundColor: "#8B4513",
+              backgroundColor: theme.palette.primary.main,
               color: "#FFFFFF",
               width: 50,
               height: 50,
               "&:hover": {
-                backgroundColor: "#A0522D",
+                backgroundColor: theme.palette.primary.dark,
                 transform: "translateY(-50%) scale(1.05)",
               },
+              transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
             onClick={() =>
               setCurrentSlide((prev) =>

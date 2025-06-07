@@ -6,11 +6,16 @@ import {
   AccordionDetails,
   Container,
   Typography,
+  useTheme,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import AnimatedSection from "../ui/AnimatedSection";
+import { SECTION_STYLES, TYPOGRAPHY_STYLES } from "../../styles/theme";
 
 const FAQSection: React.FC = () => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
+
   const faqItems = [
     {
       question: "What is the turn-around time?",
@@ -63,43 +68,52 @@ const FAQSection: React.FC = () => {
     <AnimatedSection
       id="faq"
       sx={{
-        py: 8,
-        backgroundColor: "#FFFFFF",
+        py: SECTION_STYLES.PADDING,
+        background: SECTION_STYLES.BACKGROUNDS.DEFAULT(isDark),
       }}
     >
-      <Container maxWidth="md" sx={{ px: 3 }}>
+      <Container maxWidth="md" sx={{ px: { xs: 2, sm: 3 } }}>
         <Typography
           variant="h2"
           component="h2"
           sx={{
-            fontWeight: 600,
-            textAlign: "center",
-            mb: 6,
-            color: "#2C3E50",
+            ...TYPOGRAPHY_STYLES.SECTION_TITLE,
+            ...TYPOGRAPHY_STYLES.GRADIENT_TEXT(isDark),
           }}
         >
           Frequently Asked Questions
         </Typography>
+
+        <Typography
+          variant="h6"
+          sx={{
+            ...TYPOGRAPHY_STYLES.SECTION_SUBTITLE,
+          }}
+        >
+          Find answers to common questions about our resoling services
+        </Typography>
+
         {faqItems.map((item, index) => (
           <Accordion key={index} sx={{ mb: 1 }}>
             <AccordionSummary
-              expandIcon={<ExpandMore />}
+              expandIcon={<ExpandMore sx={{ color: "text.primary" }} />}
               sx={{
                 "& .MuiAccordionSummary-content": {
-                  color: "#2C3E50",
+                  color: "text.primary",
                 },
               }}
             >
-              <Typography variant="h6" sx={{ fontWeight: 500 }}>
+              <Typography variant="h6" sx={{ fontWeight: 600 }}>
                 {item.question}
               </Typography>
             </AccordionSummary>
             <AccordionDetails>
               <Typography
-                variant="body2"
+                variant="body1"
                 sx={{
-                  color: "#6C757D",
+                  color: "text.secondary",
                   whiteSpace: "pre-line",
+                  lineHeight: 1.7,
                 }}
               >
                 {item.answer}
