@@ -40,12 +40,25 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   };
 
   const navItems = [
-    { label: "How It Works", href: "#how-it-works" },
-    { label: "Services", href: "#services" },
-    { label: "Our Work", href: "#our-work" },
-    { label: "Locations", href: "#locations" },
-    { label: "FAQ", href: "#faq" },
+    { label: "Home", href: "/", type: "page" },
+    { label: "Services", href: "#services", type: "section" },
+    { label: "Our Work", href: "#our-work", type: "section" },
+    { label: "How It Works", href: "#how-it-works", type: "section" },
+    { label: "Locations", href: "#locations", type: "section" },
+    { label: "FAQ", href: "#faq", type: "section" },
+    { label: "About Us", href: "#about", type: "section" },
   ];
+
+  const handleNavigation = (href: string, type: string) => {
+    if (type === "page") {
+      // Navigate to different page
+      window.location.href = href;
+    } else {
+      // Scroll to section on current page
+      scrollToSection(href);
+    }
+    handleMenuClose();
+  };
 
   const scrollToSection = (href: string) => {
     const element = document.querySelector(href);
@@ -77,10 +90,10 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             <Typography
               variant="h6"
               component="a"
-              href="#hero"
+              href="/"
               onClick={(e) => {
                 e.preventDefault();
-                scrollToSection("#hero");
+                handleNavigation("/", "page");
               }}
               sx={{
                 fontWeight: 700,
@@ -106,7 +119,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             {navItems.map((item) => (
               <Button
                 key={item.label}
-                onClick={() => scrollToSection(item.href)}
+                onClick={() => handleNavigation(item.href, item.type)}
                 sx={{
                   color: "inherit",
                   textTransform: "none",
@@ -145,7 +158,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
             <Button
               variant="contained"
               startIcon={<RocketLaunch />}
-              onClick={() => scrollToSection("#services")}
+              onClick={() => handleNavigation("#services", "section")}
               sx={{
                 display: { xs: "none", sm: "flex" },
                 textTransform: "none",
@@ -196,7 +209,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
         {navItems.map((item) => (
           <MenuItem
             key={item.label}
-            onClick={() => scrollToSection(item.href)}
+            onClick={() => handleNavigation(item.href, item.type)}
             sx={{
               color: darkMode ? "#FFFFFF" : "#0F171F",
               "&:hover": {

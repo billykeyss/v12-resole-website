@@ -18,6 +18,7 @@ import {
   Favorite as Heart,
 } from "@mui/icons-material";
 import AnimatedSection from "../ui/AnimatedSection";
+import { SECTION_STYLES, TYPOGRAPHY_STYLES } from "../../styles/theme";
 
 const ValuesSection: React.FC = () => {
   const theme = useTheme();
@@ -72,21 +73,19 @@ const ValuesSection: React.FC = () => {
     <AnimatedSection
       id="values"
       sx={{
-        py: 10,
-        backgroundColor: "background.default",
+        py: SECTION_STYLES.PADDING,
+        background: SECTION_STYLES.BACKGROUNDS.DEFAULT(isDark),
         position: "relative",
       }}
     >
-      <Container maxWidth="lg" sx={{ px: 3 }}>
+      <Container maxWidth="lg" sx={{ px: { xs: 2, sm: 3 } }}>
         <Box sx={{ textAlign: "center", mb: 8 }}>
           <Typography
             variant="h2"
             component="h2"
             sx={{
-              fontWeight: 700,
-              mb: 3,
-              color: "text.primary",
-              fontSize: { xs: "2rem", md: "2.5rem" },
+              ...TYPOGRAPHY_STYLES.SECTION_TITLE,
+              ...TYPOGRAPHY_STYLES.GRADIENT_TEXT(isDark),
             }}
           >
             Our Values
@@ -94,11 +93,7 @@ const ValuesSection: React.FC = () => {
           <Typography
             variant="h6"
             sx={{
-              color: "text.secondary",
-              maxWidth: "600px",
-              mx: "auto",
-              fontWeight: 400,
-              lineHeight: 1.7,
+              ...TYPOGRAPHY_STYLES.SECTION_SUBTITLE,
             }}
           >
             We&apos;re driven by principles that guide every aspect of our work,
