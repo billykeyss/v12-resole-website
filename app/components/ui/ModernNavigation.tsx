@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { useIsClient } from "../../hooks/useIsClient";
 
 interface ModernNavigationProps {
   darkMode: boolean;
@@ -30,6 +31,7 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   toggleDarkMode,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const isClient = useIsClient();
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -50,6 +52,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   ];
 
   const handleNavigation = (href: string, type: string) => {
+    if (!isClient) return;
+
     if (type === "page") {
       // Navigate to different page
       window.location.href = href;
@@ -61,6 +65,8 @@ const ModernNavigation: React.FC<ModernNavigationProps> = ({
   };
 
   const scrollToSection = (href: string) => {
+    if (!isClient) return;
+
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });

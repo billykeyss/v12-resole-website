@@ -3,6 +3,7 @@
 import { Box, Fab } from "@mui/material";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
+import { useIsClient } from "../../hooks/useIsClient";
 
 interface Section {
   id: string;
@@ -18,8 +19,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
   const [activeSection, setActiveSection] = useState<string>(
     sections[0]?.id || ""
   );
+  const isClient = useIsClient();
 
   useEffect(() => {
+    if (!isClient) return;
+
     const handleScroll = () => {
       const sectionInView = sections.find((section) => {
         const element = document.getElementById(section.id);
@@ -38,7 +42,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ sections }) => {
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
-  }, [sections]);
+  }, [sections, isClient]);
 
   return (
     <Box

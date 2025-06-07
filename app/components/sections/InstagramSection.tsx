@@ -4,6 +4,7 @@ import { Box, Container, Typography, Button, useTheme } from "@mui/material";
 import { Instagram, OpenInNew } from "@mui/icons-material";
 import { useEffect } from "react";
 import AnimatedSection from "../ui/AnimatedSection";
+import { useIsClient } from "../../hooks/useIsClient";
 import {
   SECTION_STYLES,
   TYPOGRAPHY_STYLES,
@@ -12,7 +13,11 @@ import {
 
 // Instagram Embed Component
 const InstagramEmbed = ({ url }: { url: string }) => {
+  const isClient = useIsClient();
+
   useEffect(() => {
+    if (!isClient) return;
+
     // Load Instagram embed script
     interface WindowWithInstagram extends Window {
       instgrm?: {
@@ -24,7 +29,7 @@ const InstagramEmbed = ({ url }: { url: string }) => {
 
     const windowWithInstagram = window as WindowWithInstagram;
 
-    if (typeof window !== "undefined" && windowWithInstagram.instgrm) {
+    if (windowWithInstagram.instgrm) {
       windowWithInstagram.instgrm.Embeds.process();
     } else {
       const script = document.createElement("script");
@@ -32,7 +37,7 @@ const InstagramEmbed = ({ url }: { url: string }) => {
       script.async = true;
       document.body.appendChild(script);
     }
-  }, []);
+  }, [isClient]);
 
   return (
     <Box

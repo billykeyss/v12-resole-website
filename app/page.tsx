@@ -9,22 +9,39 @@ import {
 } from "@mui/material";
 import { motion } from "framer-motion";
 import React, { useState, useMemo } from "react";
+import dynamic from "next/dynamic";
 
 // Import the centralized theme
 import { createModernTheme, SECTION_STYLES } from "./styles/theme";
 
 // Import all the new section components
-import ModernNavigation from "./components/ui/ModernNavigation";
-import FloatingCTA from "./components/ui/FloatingCTA";
 import HeroSection from "./components/sections/HeroSection";
 import OurWorkSection from "./components/sections/OurWorkSection";
 import ValuesSection from "./components/sections/ValuesSection";
 import HowItWorksSection from "./components/sections/HowItWorksSection";
 import ServicesSection from "./components/sections/ServicesSection";
 import LocationsSection from "./components/sections/LocationsSection";
-import InstagramSection from "./components/sections/InstagramSection";
 import FAQSection from "./components/sections/FAQSection";
 import AboutUsSection from "./components/sections/AboutUsSection";
+
+// Dynamically import components that use browser APIs with SSR disabled
+const ModernNavigation = dynamic(
+  () => import("./components/ui/ModernNavigation"),
+  {
+    ssr: false,
+  }
+);
+
+const FloatingCTA = dynamic(() => import("./components/ui/FloatingCTA"), {
+  ssr: false,
+});
+
+const InstagramSection = dynamic(
+  () => import("./components/sections/InstagramSection"),
+  {
+    ssr: false,
+  }
+);
 
 export default function V12ResoleDashboard() {
   const [darkMode, setDarkMode] = useState(false);

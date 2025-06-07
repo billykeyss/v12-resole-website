@@ -4,13 +4,17 @@ import { AnimatePresence, motion } from "framer-motion";
 import { Button, useTheme } from "@mui/material";
 import { RocketLaunch } from "@mui/icons-material";
 import { useEffect, useState } from "react";
+import { useIsClient } from "../../hooks/useIsClient";
 
 const FloatingCTA: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
+  const isClient = useIsClient();
 
   useEffect(() => {
+    if (!isClient) return;
+
     const toggleVisibility = () => {
       if (window.pageYOffset > 500) {
         setIsVisible(true);
@@ -21,7 +25,7 @@ const FloatingCTA: React.FC = () => {
 
     window.addEventListener("scroll", toggleVisibility);
     return () => window.removeEventListener("scroll", toggleVisibility);
-  }, []);
+  }, [isClient]);
 
   return (
     <AnimatePresence>
