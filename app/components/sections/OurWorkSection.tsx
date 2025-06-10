@@ -7,7 +7,6 @@ import {
   IconButton,
   useTheme,
 } from "@mui/material";
-import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Image from "next/image";
 import { useEffect, useState } from "react";
@@ -57,54 +56,47 @@ const OurWorkSection: React.FC = () => {
         </Typography>
 
         <Box sx={{ position: "relative", maxWidth: "900px", mx: "auto" }}>
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentSlide}
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.6 }}
-              style={{
-                width: "100%",
-                height: "500px",
-                position: "relative",
-                borderRadius: `${theme.shape.borderRadius}px`,
-                overflow: "hidden",
-                border: `2px solid ${theme.palette.primary.main}`,
-                boxShadow: isDark
-                  ? "0 20px 40px rgba(0, 0, 0, 0.4)"
-                  : "0 20px 40px rgba(59, 130, 246, 0.2)",
+          <div
+            style={{
+              width: "100%",
+              height: "500px",
+              position: "relative",
+              borderRadius: `${theme.shape.borderRadius}px`,
+              overflow: "hidden",
+              border: `2px solid ${theme.palette.primary.main}`,
+              boxShadow: isDark
+                ? "0 20px 40px rgba(0, 0, 0, 0.4)"
+                : "0 20px 40px rgba(59, 130, 246, 0.2)",
+            }}
+          >
+            <Image
+              src={slides[currentSlide]}
+              alt={`Professional Resole ${currentSlide + 1}`}
+              layout="fill"
+              objectFit="cover"
+            />
+            <Box
+              sx={{
+                position: "absolute",
+                bottom: 0,
+                left: 0,
+                right: 0,
+                background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
+                p: 3,
               }}
             >
-              <Image
-                src={slides[currentSlide]}
-                alt={`Professional Resole ${currentSlide + 1}`}
-                layout="fill"
-                objectFit="cover"
-              />
-              <Box
+              <Typography
+                variant="h6"
                 sx={{
-                  position: "absolute",
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  background: "linear-gradient(transparent, rgba(0,0,0,0.8))",
-                  p: 3,
+                  color: theme.palette.primary.main,
+                  fontWeight: 700,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.5)",
                 }}
               >
-                <Typography
-                  variant="h6"
-                  sx={{
-                    color: theme.palette.primary.main,
-                    fontWeight: 700,
-                    textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-                  }}
-                >
-                  PROFESSIONAL RESOLE #{currentSlide + 1}
-                </Typography>
-              </Box>
-            </motion.div>
-          </AnimatePresence>
+                PROFESSIONAL RESOLE #{currentSlide + 1}
+              </Typography>
+            </Box>
+          </div>
 
           {/* Enhanced Navigation */}
           <IconButton

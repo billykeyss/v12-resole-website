@@ -25,7 +25,7 @@ import { SECTION_STYLES, TYPOGRAPHY_STYLES } from "../../styles/theme";
 const ServicesSection: React.FC = () => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
-  const [servicesTabValue, setServicesTabValue] = useState("single");
+  const [servicesTabValue, setServicesTabValue] = useState("membership");
 
   return (
     <AnimatedSection
@@ -129,7 +129,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       variant="h5"
                       sx={{
-                        color: "text.primary",
+                        color: isDark ? "#FFFFFF" : "text.primary",
                         fontWeight: 600,
                       }}
                     >
@@ -139,7 +139,10 @@ const ServicesSection: React.FC = () => {
                   subheader={
                     <Typography
                       variant="body2"
-                      sx={{ color: "text.secondary", mt: 1 }}
+                      sx={{
+                        color: isDark ? "#E2E8F0" : "text.secondary",
+                        mt: 1,
+                      }}
                     >
                       Replacement of rubber on the front sole. Restore the grip
                       of your climbing shoes.
@@ -160,7 +163,7 @@ const ServicesSection: React.FC = () => {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ color: "text.secondary", mb: 3 }}
+                    sx={{ color: isDark ? "#E2E8F0" : "text.secondary", mb: 3 }}
                   >
                     Estimated Lead Time: 2-3 weeks
                   </Typography>
@@ -169,7 +172,7 @@ const ServicesSection: React.FC = () => {
                     sx={{
                       fontWeight: 600,
                       mb: 2,
-                      color: "text.primary",
+                      color: isDark ? "#FFFFFF" : "text.primary",
                     }}
                   >
                     Available Rubber Options:
@@ -184,7 +187,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Unparallel Real Honor" />
+                      <ListItemText
+                        primary="Unparallel Real Honor"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
@@ -195,7 +205,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Vibram Grip" />
+                      <ListItemText
+                        primary="Vibram Grip"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
@@ -206,7 +223,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Madrock Science Friction" />
+                      <ListItemText
+                        primary="Madrock Science Friction"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </CardContent>
@@ -215,6 +239,12 @@ const ServicesSection: React.FC = () => {
                     variant="contained"
                     fullWidth
                     size="large"
+                    onClick={() =>
+                      window.open(
+                        "https://a016df-7b.myshopify.com/products/resole-studio?variant=46566430671022",
+                        "_blank"
+                      )
+                    }
                     sx={{
                       borderRadius: 2,
                       py: 1.5,
@@ -257,7 +287,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       variant="h5"
                       sx={{
-                        color: "text.primary",
+                        color: isDark ? "#FFFFFF" : "text.primary",
                         fontWeight: 600,
                       }}
                     >
@@ -267,7 +297,10 @@ const ServicesSection: React.FC = () => {
                   subheader={
                     <Typography
                       variant="body2"
-                      sx={{ color: "text.secondary", mt: 1 }}
+                      sx={{
+                        color: isDark ? "#E2E8F0" : "text.secondary",
+                        mt: 1,
+                      }}
                     >
                       Replacement of rubber on the rand and front sole. Fix the
                       rand for better performance.
@@ -288,7 +321,7 @@ const ServicesSection: React.FC = () => {
                   </Typography>
                   <Typography
                     variant="body2"
-                    sx={{ color: "text.secondary", mb: 3 }}
+                    sx={{ color: isDark ? "#E2E8F0" : "text.secondary", mb: 3 }}
                   >
                     Estimated Lead Time: 3-4 weeks
                   </Typography>
@@ -297,7 +330,7 @@ const ServicesSection: React.FC = () => {
                     sx={{
                       fontWeight: 600,
                       mb: 2,
-                      color: "text.primary",
+                      color: isDark ? "#FFFFFF" : "text.primary",
                     }}
                   >
                     Includes:
@@ -312,7 +345,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Rand repair" />
+                      <ListItemText
+                        primary="Rand repair"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
@@ -323,7 +363,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Sole replacement" />
+                      <ListItemText
+                        primary="Sole replacement"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
@@ -334,7 +381,14 @@ const ServicesSection: React.FC = () => {
                           }}
                         />
                       </ListItemIcon>
-                      <ListItemText primary="Choice of rubber options (same as Sole Repair)" />
+                      <ListItemText
+                        primary="Choice of rubber options (same as Sole Repair)"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </CardContent>
@@ -343,6 +397,12 @@ const ServicesSection: React.FC = () => {
                     variant="contained"
                     fullWidth
                     size="large"
+                    onClick={() =>
+                      window.open(
+                        "https://a016df-7b.myshopify.com/products/resole-studio?variant=46566430703790",
+                        "_blank"
+                      )
+                    }
                     sx={{
                       borderRadius: 2,
                       py: 1.5,
@@ -403,7 +463,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       variant="h5"
                       sx={{
-                        color: "text.primary",
+                        color: isDark ? "#FFFFFF" : "text.primary",
                         fontWeight: 600,
                       }}
                     >
@@ -413,7 +473,10 @@ const ServicesSection: React.FC = () => {
                   subheader={
                     <Typography
                       variant="body2"
-                      sx={{ color: "text.secondary", mt: 1 }}
+                      sx={{
+                        color: isDark ? "#E2E8F0" : "text.secondary",
+                        mt: 1,
+                      }}
                     >
                       Flexible benefits for climbers
                     </Typography>
@@ -433,7 +496,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       component="span"
                       variant="h6"
-                      sx={{ color: "text.secondary" }}
+                      sx={{ color: isDark ? "#E2E8F0" : "text.secondary" }}
                     >
                       /month
                     </Typography>
@@ -443,13 +506,27 @@ const ServicesSection: React.FC = () => {
                       <ListItemIcon>
                         <CheckCircle sx={{ color: "#10B981", fontSize: 20 }} />
                       </ListItemIcon>
-                      <ListItemText primary="Free shipping on all orders" />
+                      <ListItemText
+                        primary="Free shipping on all orders"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
                         <CheckCircle sx={{ color: "#10B981", fontSize: 20 }} />
                       </ListItemIcon>
-                      <ListItemText primary="Free rand repair" />
+                      <ListItemText
+                        primary="Free rand repair"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </CardContent>
@@ -520,7 +597,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       variant="h5"
                       sx={{
-                        color: "text.primary",
+                        color: isDark ? "#FFFFFF" : "text.primary",
                         fontWeight: 600,
                       }}
                     >
@@ -530,7 +607,10 @@ const ServicesSection: React.FC = () => {
                   subheader={
                     <Typography
                       variant="body2"
-                      sx={{ color: "text.secondary", mt: 1 }}
+                      sx={{
+                        color: isDark ? "#E2E8F0" : "text.secondary",
+                        mt: 1,
+                      }}
                     >
                       Best value for dedicated climbers
                     </Typography>
@@ -550,7 +630,7 @@ const ServicesSection: React.FC = () => {
                     <Typography
                       component="span"
                       variant="h6"
-                      sx={{ color: "text.secondary" }}
+                      sx={{ color: isDark ? "#E2E8F0" : "text.secondary" }}
                     >
                       /year
                     </Typography>
@@ -560,19 +640,40 @@ const ServicesSection: React.FC = () => {
                       <ListItemIcon>
                         <CheckCircle sx={{ color: "#10B981", fontSize: 20 }} />
                       </ListItemIcon>
-                      <ListItemText primary="Free shipping on all orders" />
+                      <ListItemText
+                        primary="Free shipping on all orders"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
                         <CheckCircle sx={{ color: "#10B981", fontSize: 20 }} />
                       </ListItemIcon>
-                      <ListItemText primary="Free rand repair" />
+                      <ListItemText
+                        primary="Free rand repair"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                     <ListItem sx={{ py: 0.5, px: 0 }}>
                       <ListItemIcon>
                         <CheckCircle sx={{ color: "#10B981", fontSize: 20 }} />
                       </ListItemIcon>
-                      <ListItemText primary="One free shoe repair (Sole + Rand)" />
+                      <ListItemText
+                        primary="One free shoe repair (Sole + Rand)"
+                        sx={{
+                          "& .MuiListItemText-primary": {
+                            color: isDark ? "#FFFFFF" : "text.primary",
+                          },
+                        }}
+                      />
                     </ListItem>
                   </List>
                 </CardContent>

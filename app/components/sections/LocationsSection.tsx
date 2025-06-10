@@ -44,6 +44,13 @@ const LocationsSection: React.FC = () => {
   const [hoveredLocationIndex, setHoveredLocationIndex] = useState<
     number | null
   >(null);
+  const [focusedLocation, setFocusedLocation] = useState<{
+    center: [number, number];
+    zoom: number;
+  }>({
+    center: [39.8283, -98.5795], // Default center (US center)
+    zoom: 4, // Default zoom
+  });
 
   const locations: Location[] = [
     {
@@ -190,16 +197,24 @@ const LocationsSection: React.FC = () => {
     });
   };
 
+  const handleLocationClick = (location: Location) => {
+    setFocusedLocation({
+      center: location.coordinates,
+      zoom: 13, // Closer zoom when focusing on specific location
+    });
+  };
+
   const MapComponent = () => {
     try {
       return (
         <MapContainer
-          center={[39.8283, -98.5795]} // Geographic center of United States
-          zoom={4} // Zoom level to show entire US
+          center={focusedLocation.center}
+          zoom={focusedLocation.zoom}
           style={{ height: "100%", width: "100%" }}
           scrollWheelZoom={true}
           zoomControl={true}
           attributionControl={true}
+          key={`${focusedLocation.center[0]}-${focusedLocation.center[1]}-${focusedLocation.zoom}`}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -287,7 +302,7 @@ const LocationsSection: React.FC = () => {
           {/* Map */}
           <Card
             sx={{
-              height: { xs: "400px", lg: "100%" },
+              height: { xs: "300px", lg: "100%" },
               border: `1px solid ${theme.palette.divider}`,
               borderRadius: 3,
               overflow: "hidden",
@@ -302,7 +317,7 @@ const LocationsSection: React.FC = () => {
           {/* Locations List */}
           <Box
             sx={{
-              height: { xs: "auto", lg: "600px" },
+              height: { xs: "400px", lg: "600px" },
               overflowY: "auto",
               pr: { lg: 1 },
             }}
@@ -330,6 +345,7 @@ const LocationsSection: React.FC = () => {
                   }}
                   onMouseEnter={() => setHoveredLocationIndex(index)}
                   onMouseLeave={() => setHoveredLocationIndex(null)}
+                  onClick={() => handleLocationClick(location)}
                 >
                   <CardContent sx={{ p: 3 }}>
                     <Typography

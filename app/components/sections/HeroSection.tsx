@@ -128,7 +128,7 @@ const HeroSection: React.FC = () => {
                 color: chip.gradient
                   ? "#FFFFFF"
                   : isDark
-                  ? "#F7FAFC"
+                  ? "#FFFFFF"
                   : "text.primary",
                 border: !chip.gradient
                   ? `1px solid ${theme.palette.divider}`
