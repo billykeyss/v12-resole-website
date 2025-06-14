@@ -9,30 +9,50 @@ import {
 } from "@mui/material";
 import { ChevronLeft, ChevronRight } from "@mui/icons-material";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo, useMemo, useCallback } from "react";
 import AnimatedSection from "../ui/AnimatedSection";
 import { SECTION_STYLES, TYPOGRAPHY_STYLES } from "../../styles/theme";
 
-const OurWorkSection: React.FC = () => {
+// Memoized slides data
+const SLIDES = [
+  {
+    src: "/tc_pro.jpg",
+    alt: "TC Pro Resole - Professional climbing shoe resoling",
+    title: "TC PRO RESOLE",
+  },
+  {
+    src: "/evolv_elektra.jpg", // Fixed typo from .jpq
+    alt: "Evolv Elektra Resole - Expert shoe repair",
+    title: "EVOLV ELEKTRA RESOLE",
+  },
+  {
+    src: "/lasportiva_solutions.jpg",
+    alt: "La Sportiva Solutions Resole - Premium resoling service",
+    title: "LA SPORTIVA SOLUTIONS RESOLE",
+  },
+] as const;
+
+const OurWorkSection: React.FC = memo(() => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  const slides = [
-    "/tc_pro.jpg",
-    "/evolv_elektra.jpq",
-    "/lasportiva_solutions.jpg",
-  ];
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prevSlide) =>
+      prevSlide === SLIDES.length - 1 ? 0 : prevSlide + 1
+    );
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev === 0 ? SLIDES.length - 1 : prev - 1));
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prevSlide) =>
-        prevSlide === slides.length - 1 ? 0 : prevSlide + 1
-      );
-    }, 5000);
-
+    const timer = setInterval(nextSlide, 5000);
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, [nextSlide]);
+
+  const currentSlideData = useMemo(() => SLIDES[currentSlide], [currentSlide]);
 
   return (
     <AnimatedSection
@@ -56,12 +76,12 @@ const OurWorkSection: React.FC = () => {
         </Typography>
 
         <Box sx={{ position: "relative", maxWidth: "900px", mx: "auto" }}>
-          <div
-            style={{
+          <Box
+            sx={{
               width: "100%",
               height: "500px",
               position: "relative",
-              borderRadius: `${theme.shape.borderRadius}px`,
+              borderRadius: 2,
               overflow: "hidden",
               border: `2px solid ${theme.palette.primary.main}`,
               boxShadow: isDark
@@ -70,10 +90,14 @@ const OurWorkSection: React.FC = () => {
             }}
           >
             <Image
-              src={slides[currentSlide]}
-              alt={`Professional Resole ${currentSlide + 1}`}
-              layout="fill"
-              objectFit="cover"
+              src={currentSlideData.src}
+              alt={currentSlideData.alt}
+              fill
+              style={{ objectFit: "cover" }}
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 900px, 900px"
+              priority={currentSlide === 0} // Prioritize first image
+              placeholder="blur"
+              blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
             />
             <Box
               sx={{
@@ -93,10 +117,10 @@ const OurWorkSection: React.FC = () => {
                   textShadow: "0 2px 4px rgba(0,0,0,0.5)",
                 }}
               >
-                PROFESSIONAL RESOLE #{currentSlide + 1}
+                {currentSlideData.title}
               </Typography>
             </Box>
-          </div>
+          </Box>
 
           {/* Enhanced Navigation */}
           <IconButton
@@ -115,11 +139,8 @@ const OurWorkSection: React.FC = () => {
               },
               transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
-            onClick={() =>
-              setCurrentSlide((prev) =>
-                prev === 0 ? slides.length - 1 : prev - 1
-              )
-            }
+            onClick={prevSlide}
+            aria-label="Previous slide"
           >
             <ChevronLeft sx={{ fontSize: 24 }} />
           </IconButton>
@@ -139,18 +160,50 @@ const OurWorkSection: React.FC = () => {
               },
               transition: "all 0.2s cubic-bezier(0.4, 0, 0.2, 1)",
             }}
-            onClick={() =>
-              setCurrentSlide((prev) =>
-                prev === slides.length - 1 ? 0 : prev + 1
-              )
-            }
+            onClick={nextSlide}
+            aria-label="Next slide"
           >
             <ChevronRight sx={{ fontSize: 24 }} />
           </IconButton>
+
+          {/* Slide Indicators */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              gap: 1,
+              mt: 3,
+            }}
+          >
+            {SLIDES.map((_, index) => (
+              <Box
+                key={index}
+                onClick={() => setCurrentSlide(index)}
+                sx={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: "50%",
+                  backgroundColor:
+                    index === currentSlide
+                      ? theme.palette.primary.main
+                      : isDark
+                      ? "rgba(255,255,255,0.3)"
+                      : "rgba(0,0,0,0.3)",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
+                  "&:hover": {
+                    transform: "scale(1.2)",
+                  },
+                }}
+              />
+            ))}
+          </Box>
         </Box>
       </Container>
     </AnimatedSection>
   );
-};
+});
+
+OurWorkSection.displayName = "OurWorkSection";
 
 export default OurWorkSection;

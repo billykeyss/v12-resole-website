@@ -2,7 +2,7 @@
 
 import { Box, Container, Typography, Button, useTheme } from "@mui/material";
 import { Instagram, OpenInNew } from "@mui/icons-material";
-import { useEffect } from "react";
+import { memo } from "react";
 import AnimatedSection from "../ui/AnimatedSection";
 import {
   SECTION_STYLES,
@@ -10,69 +10,84 @@ import {
   BUTTON_STYLES,
 } from "../../styles/theme";
 
-// Instagram Embed Component
-const InstagramEmbed = ({ url }: { url: string }) => {
-  useEffect(() => {
-    // Load Instagram embed script
-    interface WindowWithInstagram extends Window {
-      instgrm?: {
-        Embeds: {
-          process(): void;
-        };
-      };
-    }
-
-    const windowWithInstagram = window as WindowWithInstagram;
-
-    if (typeof window !== "undefined" && windowWithInstagram.instgrm) {
-      windowWithInstagram.instgrm.Embeds.process();
-    } else {
-      const script = document.createElement("script");
-      script.src = "//www.instagram.com/embed.js";
-      script.async = true;
-      document.body.appendChild(script);
-    }
-  }, []);
+// Lightweight Instagram Post Component (replaces heavy embed)
+const InstagramPost = memo(({ url, index }: { url: string; index: number }) => {
+  const theme = useTheme();
+  const isDark = theme.palette.mode === "dark";
 
   return (
     <Box
       sx={{
         maxWidth: 400,
         mx: "auto",
-        "& iframe": {
-          maxWidth: "100% !important",
+        height: 400,
+        borderRadius: 2,
+        overflow: "hidden",
+        border: `1px solid ${theme.palette.divider}`,
+        background: isDark
+          ? "rgba(45, 55, 72, 0.8)"
+          : "rgba(255, 255, 255, 0.9)",
+        backdropFilter: "blur(10px)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        cursor: "pointer",
+        transition: "all 0.2s ease",
+        "&:hover": {
+          transform: "translateY(-2px)",
+          boxShadow: isDark
+            ? "0 8px 25px rgba(228, 64, 95, 0.3)"
+            : "0 8px 25px rgba(228, 64, 95, 0.2)",
         },
       }}
+      onClick={() => window.open(url, "_blank", "noopener,noreferrer")}
     >
-      <blockquote
-        className="instagram-media"
-        data-instgrm-permalink={url}
-        data-instgrm-version="14"
-        style={{
-          background: "#FFF",
-          border: 0,
-          borderRadius: "3px",
-          boxShadow: "0 0 1px 0 rgba(0,0,0,0.5),0 1px 10px 0 rgba(0,0,0,0.15)",
-          margin: "1px",
-          maxWidth: "400px",
-          minWidth: "326px",
-          padding: 0,
-          width: "calc(100% - 2px)",
+      <Instagram
+        sx={{
+          fontSize: 80,
+          mb: 2,
+          background: "linear-gradient(45deg, #E4405F, #FF6B35, #FFDC80)",
+          backgroundClip: "text",
+          WebkitBackgroundClip: "text",
+          color: "transparent",
         }}
       />
+      <Typography
+        variant="h6"
+        sx={{
+          fontWeight: 600,
+          color: "text.primary",
+          mb: 1,
+        }}
+      >
+        V12 Resole Post #{index + 1}
+      </Typography>
+      <Typography
+        variant="body2"
+        sx={{
+          color: "text.secondary",
+          textAlign: "center",
+          px: 3,
+        }}
+      >
+        Click to view our latest work and updates on Instagram
+      </Typography>
     </Box>
   );
-};
+});
 
-const InstagramSection: React.FC = () => {
+InstagramPost.displayName = "InstagramPost";
+
+const InstagramSection: React.FC = memo(() => {
   const theme = useTheme();
   const isDark = theme.palette.mode === "dark";
 
-  // Example Instagram post URLs - replace with your actual posts
+  // Simplified Instagram post references (no heavy embeds)
   const instagramPosts = [
-    "https://www.instagram.com/p/EXAMPLE1/", // Replace with actual post URL
-    "https://www.instagram.com/p/EXAMPLE2/", // Replace with actual post URL
-    "https://www.instagram.com/p/EXAMPLE3/", // Replace with actual post URL
+    "https://www.instagram.com/v12resole/", // Direct to profile for now
+    "https://www.instagram.com/v12resole/",
+    "https://www.instagram.com/v12resole/",
   ];
 
   return (
@@ -141,7 +156,7 @@ const InstagramSection: React.FC = () => {
           }}
         >
           {instagramPosts.map((url, index) => (
-            <InstagramEmbed key={index} url={url} />
+            <InstagramPost key={`instagram-${index}`} url={url} index={index} />
           ))}
         </Box>
 
@@ -172,6 +187,8 @@ const InstagramSection: React.FC = () => {
       </Container>
     </AnimatedSection>
   );
-};
+});
+
+InstagramSection.displayName = "InstagramSection";
 
 export default InstagramSection;
